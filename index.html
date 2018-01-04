@@ -1,0 +1,263 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Trivia Game</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+	<center><h1>Egyptian Mythology Quiz!!</h1></center>
+	<center><div id="timer"></div></center>
+	<center><div class="quiz-container">
+		<div id="quiz"></div>
+	</div></center>
+	<br><br><br><br><br><br><br><br>
+	<center><button id="previous">Previous Question</button>
+	<button id="next">Next Question</button>
+	<button id="submit">Submit Quiz</button>
+	<div id="results"></div></center>
+
+
+<script type="text/javascript">
+	var questions = [
+	{
+		question: "Who is the Egyptian mother goddess, consort of Amun?",
+		answers: {
+			a: "Serket",
+			b:"Mut",
+			c:"Nephthys",
+			d:"Isis"
+		},
+		correctAnswer: "b"
+	},
+	{
+		question: "Who is the Egyptian goddess of childbirth and fertility?",
+		answers: {
+			a: "Set",
+			b: "Neith",
+			c: "Tawaret",
+			d: "Seshat"
+		},
+		correctAnswer: "c"
+	},
+	{
+		question: "Who is the Egyptian god of writing, wisdom, astronomy and magic?",
+		answers: {
+			a: "Thoth",
+			b: "Shu",
+			c: "Neith",
+			d: "Anubis"
+		},
+		correctAnswer: "a"
+	},
+	{
+		question: "Who is the Egyptian god of desert, storms, foreginers, darkness, and chaos?",
+		answers: {
+			a: "Osiris",
+			b: "Sobek",
+			c: "Amun",
+			d: "Set"
+		},
+		correctAnswer: "d"
+	},
+	{
+		question: "Who is the protective Egyptian goddess of the dead, consort of Set?",
+		answers: {
+			a: "Nephthys",
+			b: "Hathor",
+			c: "Serket",
+			d: "Ma'at"
+		},
+		correctAnswer: "a"
+	},
+	{
+		question: "Who is the Egyptian goddess of the sky?",
+		answers: {
+			a: "Anuket",
+			b: "Nut",
+			c: "Serket",
+			d: "Tefnut"
+		},
+		correctAnswer: "b"
+	},
+	{
+		question: "Who is the oldest Egyptian creator deity?",
+		answers: {
+			a: "Khepri",
+			b: "Sobek",
+			c: "Thoth",
+			d: "Atum"
+		},
+		correctAnswer: "d"
+	},
+	{
+		question: "Who is the Egyptian goddess of the Nile River?",
+		answers: {
+			a: "Tefnut",
+			b: "Anuket",
+			c: "Bast",
+			d: "Hathor"
+		},
+		correctAnswer: "b"
+	}
+	];
+(function() {
+function buildQuiz() {
+    // we'll need a place to store the HTML output
+    var output = ["<button id='start' class='slide'>Start</button>"];
+
+    // for each question...
+    questions.forEach((currentQuestion, questionNumber) => {
+      // we'll want to store the list of answer choices
+      var answers = [];
+
+      // and for each available answer...
+      for (letter in currentQuestion.answers) {
+        // ...add an HTML radio button
+        answers.push(
+          `<label>
+             <input type="radio" name="question${questionNumber}" value="${letter}">
+              ${letter} :
+              ${currentQuestion.answers[letter]}
+           </label>`
+        );
+      }
+
+      // add this question and its answers to the output
+      output.push(
+        `<div class="slide">
+           <div class="question"> ${currentQuestion.question} </div>
+           <div class="answers"> ${answers.join("")} </div>
+         </div>`
+      );
+    });
+    // output.push(
+    // 	"<div class='slide'> <div>Correct: " + numCorrect + "</div><br><div>Incorrect: " + questions.length - numCorrect + "</div></div>")
+    // finally combine our output list into one string of HTML and put it on the page
+    quizContainer.innerHTML = output.join("");
+  }
+
+  function showResults() {
+    // gather answer containers from our quiz
+    var answerContainers = quizContainer.querySelectorAll(".answers");
+
+    // keep track of user's answers
+    var numCorrect = 0;
+
+    // for each question...
+    questions.forEach((currentQuestion, questionNumber) => {
+      // find selected answer
+      var answerContainer = answerContainers[questionNumber];
+      var selector = `input[name=question${questionNumber}]:checked`;
+      var userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+      // if answer is correct
+      if (userAnswer === currentQuestion.correctAnswer) {
+        // add to the number of correct answers
+        numCorrect++;
+
+        // color the answers green
+        answerContainers[questionNumber].style.color = "lightgreen";
+      } else {
+        // if answer is wrong or blank
+        // color the answers red
+        answerContainers[questionNumber].style.color = "red";
+      }
+    });
+
+    // show number of correct answers out of total
+    resultsContainer.innerHTML = `${numCorrect} out of ${questions.length}`;
+  }
+
+  function showSlide(n) {
+    slides[currentSlide].classList.remove("active-slide");
+    slides[n].classList.add("active-slide");
+    currentSlide = n;
+    console.log(slides.length);
+    
+    
+    if (currentSlide === slides.length - 1) {
+    	nextButton.style.display = "none";
+    	submitButton.style.display = "inline-block";
+    } else {
+    	nextButton.style.display = "inline-block";
+    	submitButton.style.display = "none";
+    }
+
+    if (currentSlide === 0) {
+    	previousButton.style.display = "none";
+    	nextButton.style.display = "none";
+    } else if (currentSlide === 1){
+    	previousButton.style.display = "none";
+    } else {
+    	previousButton.style.display = "inline-block";
+    }
+  }
+
+  function showNextSlide() {
+    showSlide(currentSlide + 1);
+  }
+
+  function showPreviousSlide() {
+    showSlide(currentSlide - 1);
+  }
+  var timerDisplay = 45;
+  var intervalId;
+  function timer(){
+  	intervalId = setInterval(decrement, 1000)
+  };
+  function decrement(){
+  	timerDisplay --;
+  	document.getElementById('timer').innerHTML = "<h2>Time Remaining: " + timerDisplay + "</h2>"
+  	if(timerDisplay === 0){
+  		stop();
+  		showResults();
+  	}
+  };
+  function stop(){
+  	clearInterval(intervalId);
+  };
+  var quizContainer = document.getElementById("quiz");
+  var resultsContainer = document.getElementById("results");
+  var submitButton = document.getElementById("submit");
+
+  // display quiz right away
+  buildQuiz();
+
+  var previousButton = document.getElementById("previous");
+  var nextButton = document.getElementById("next");
+  var startButton = document.getElementById('start');
+  var slides = document.querySelectorAll(".slide");
+  var currentSlide = 0;
+
+  showSlide(0);
+
+  // on submit, show results
+  submitButton.addEventListener("click", function(){
+  	stop();
+  	showResults();
+  	
+  });
+  previousButton.addEventListener("click", showPreviousSlide);
+  nextButton.addEventListener("click", showNextSlide);
+  startButton.addEventListener('click', function(){
+  	showNextSlide();
+  	timer();
+  	// setTimeout(showResults, 30000);
+  });
+})();
+
+// setTimeout(showResults, 30000);
+</script>
+
+	
+
+
+</body>
+</html>
