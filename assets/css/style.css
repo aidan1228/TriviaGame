@@ -19,23 +19,28 @@ button:hover{
     background-color: #38a;
 }
 h1{
-    margin-left: 35%;
+    /*margin-left: 35%;*/
 }
 #start{
     padding-left: 10px;
     padding-right: 10px;
+    margin: 100px;
+    width: 575px;
+    align-items: center;
 }
 #timer{
-    margin-left: 40%;
+    /*margin-left: 40%;*/
 }
 .quiz-container{
     padding: 20px;
     margin: auto;
+    width: 750px;
+    /*display: flex;*/
     border: solid 5px;
     background-image: url("https://www.desktopbackground.org/p/2010/10/04/90042_css-papyrus-backgrounds-blobernet-com_590x577_h.jpg");
 }
 #quiz{
-    margin-left: 40%;
+    /*margin-left: 40%;*/
     padding: 20px;
 }
 .question{
@@ -68,6 +73,7 @@ h1{
   width: 100%;
   z-index: 1;
   opacity: 0;
+  padding:20px;
   transition: opacity 0.5s;
 }
 .active-slide{
@@ -76,6 +82,9 @@ h1{
 }
 .quiz-container{
   position: relative;
-  height: 200px;
+  height: 500px;
   margin-top: 40px;
+}
+.selection{
+  margin: 20px;
 }
